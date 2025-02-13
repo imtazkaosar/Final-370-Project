@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+
+        .details {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .details p {
+            margin: 10px 0;
+            font-size: 1.2rem;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            background: #2575fc;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-size: 1.2rem;
+        }
+
+        a:hover {
+            background: #1b5bbf;
+        }
+
+        #totalCost {
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Payment Successful!</h1>
+        <div class="details">
+            <p><strong>Transaction ID:</strong> <span id="trxId">Loading...</span></p>
+            <p><strong>Car ID:</strong> <span id="carId">Loading...</span></p>
+            <p><strong>Rent Date:</strong> <span id="rentDate">Loading...</span></p>
+            <p><strong>Return Date:</strong> <span id="returnDate">Loading...</span></p>
+            <p><strong>Total Cost:</strong> <span id="totalCost">Calculating...</span></p>
+        </div>
+        <a href="cars.html">Go to Dashboard</a>
+    </div>
+
+    <?php
+    $host = "localhost";
+    $db = "car_rental_db";
+    $user = "root";
+    $pass = "";
+
+    // Database connection
+    $conn = new mysqli($host, $user, $pass, $db);
+
+    // Check connection
+    if ($conn->connect_error) {
+        die(""); // Connection failed, handle error silently
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['car_id'])) {
+        $car_id = $_GET['car_id'];
+        $query = "SELECT rental_price FROM cars WHERE car_id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("s", $car_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $rental_price = 0;
+
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $rental_price = $row['rental_price'];
+        }
+
+        $stmt->close();
+        $conn->close();
+
+        echo $rental_price; // Output the rental price
+    } else {
+        echo ""; // No car_id provided or invalid request
+    }
+    ?>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const trxId = urlParams.get('trx_id') || 'N/A';
+            const carId = urlParams.get('car_id') || 'N/A';
+            const rentDate = urlParams.get('rent_date') || 'N/A';
+            const returnDate = urlParams.get('return_date') || 'N/A';
+
+            document.getElementById('trxId').innerText = trxId;
+            document.getElementById('carId').innerText = carId;
+            document.getElementById('rentDate').innerText = rentDate;
+            document.getElementById('returnDate').innerText = returnDate;
+
+            if (rentalPrice > 0 && rentDate !== 'N/A' && returnDate !== 'N/A') {
+                const rentDateObj = new Date(rentDate);
+                const returnDateObj = new Date(returnDate);
+
+                const timeDiff = returnDateObj - rentDateObj;
+                const days = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
+
+                if (days > 0) {
+                    const totalCost = days * rentalPrice;
+                    document.getElementById('totalCost').innerText = `${totalCost} BDT (${days} days @ ${rentalPrice} BDT/day)`;
+                } else {
+                    document.getElementById('totalCost').innerText = "Invalid rental period";
+                }
+            } else {
+                document.getElementById('totalCost').innerText = "Unable to calculate cost";
+            }
+        });
+    </script>
+</body>
+</html>

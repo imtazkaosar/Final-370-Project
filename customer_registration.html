@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-bar .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .nav-bar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-bar ul li {
+            margin-left: 20px;
+        }
+
+        .nav-bar ul li a {
+            text-decoration: none;
+            color: #fff;
+            font-size: 1rem;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .nav-bar ul li a:hover {
+            background: linear-gradient(135deg, #ff6a00, #ee0979);
+            transform: scale(1.1);
+        }
+
+        .registration-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            margin: 100px auto;
+        }
+
+        .registration-container h1 {
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        form input, form button {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        form input {
+            background: rgba(255, 255, 255, 0.8);
+            color: #333;
+        }
+
+        form button {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        form button:hover {
+            background: linear-gradient(135deg, #2575fc, #6a11cb);
+            transform: scale(1.05);
+        }
+
+        p {
+            margin-top: 10px;
+        }
+
+        p a {
+            color: #ff6a00;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        p a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="nav-bar">
+        <div class="logo">Car Rental</div>
+        <ul>
+            <li><a href="home.html">Home</a></li>
+            <li><a href="customer_login.html">Login</a></li>
+            <li><a href="customer_registration.html">Sign Up</a></li>
+            <li><a href="view_cars.php">View Cars</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+        </ul>
+    </div>
+
+    <!-- Registration Form -->
+    <div class="registration-container">
+        <h1>Sign Up</h1>
+        <form method="POST" action="customer_registration.php">
+            <input type="text" name="name" placeholder="Full Name" required>
+            <input type="email" name="email" placeholder="Email Address" required>
+            <input type="text" name="national_id" placeholder="National ID" required>
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+            <button type="submit" name="register">Register</button>
+        </form>
+        
+        <p>Already have an account? <a href="customer_login.html">Login</a></p>
+    </div>
+</body>
+</html>

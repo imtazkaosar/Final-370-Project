@@ -1,0 +1,231 @@
+<?php
+session_start();
+$username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Guest'; // Retrieve logged-in user's username
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-bar {
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-bar .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .nav-bar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-bar ul li {
+            margin-left: 20px;
+        }
+
+        .nav-bar ul li a {
+            text-decoration: none;
+            color: #fff;
+            font-size: 1rem;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .nav-bar ul li a:hover {
+            background: linear-gradient(135deg, #ff6a00, #ee0979);
+            transform: scale(1.1);
+        }
+
+        .logout-btn {
+            background: #f3f3f3;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #ff260e;
+            color: #fff;
+        }
+
+        .container {
+            width: 50%;
+            margin: 100px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .summary {
+            background: #fafafa;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: left;
+        }
+
+        .summary p {
+            margin: 5px 0;
+            font-size: 1rem;
+            color: #444;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        form label {
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        form input {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        form button {
+            background: #2575fc;
+            color: #fff;
+            border: none;
+            padding: 15px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        form button:hover {
+            background: #1b5bbf;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 1rem;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="nav-bar">
+        <div class="logo">
+            <a href="home.html">
+                <img src="image/logo rm.png" alt="Car Rental Logo" style="max-height: 50px; vertical-align: middle; margin-right: 10px;">
+            </a>
+        </div>
+        <ul>
+            <li><a href="home.html">Home</a></li>
+            <li><a href="customer_registration.html">Sign Up</a></li>
+            <li><a href="cars.html">View Cars</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+        </ul>
+        <button id="logout-btn" class="logout-btn">Log Out</button>
+    </div>
+
+    <div class="container">
+        <h1>Payment</h1>
+
+        <!-- Error Message -->
+        <div class="error-message" id="error-message" style="display: none;">Error: Missing car details. Please go back and try again.</div>
+
+        <!-- Booking Summary -->
+        <div class="summary">
+            <p><strong>Username:</strong> <?php echo $username; ?></p>
+            <p><strong>Car Name:</strong> <span id="carName">Loading...</span></p>
+            <p><strong>Price per Day:</strong> $<span id="price">Loading...</span></p>
+        </div>
+
+        <!-- Payment Form -->
+        <form method="POST" action="book_car.php">
+            <input type="hidden" name="car_id" id="hiddenCarId" value="">
+            <input type="hidden" name="car_name" id="hiddenCarName" value="">
+            <label for="return_date">Return Date:</label>
+            <input type="date" name="return_date" required>
+            <button type="submit">Proceed To Payment</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const carId = urlParams.get('car_id');
+            const carName = urlParams.get('car_name');
+            const price = urlParams.get('price');
+
+            console.log({ carId, carName, price }); // Debugging output
+
+            if (carId) {
+                document.getElementById('hiddenCarId').value = carId;
+            } else {
+                console.error("Car ID is missing");
+            }
+
+            if (carName) {
+                document.getElementById('carName').innerText = carName;
+                document.getElementById('hiddenCarName').value = carName;
+            } else {
+                document.getElementById('carName').innerText = "N/A";
+            }
+
+            if (price) {
+                document.getElementById('price').innerText = price;
+            } else {
+                document.getElementById('price').innerText = "0";
+            }
+        });
+
+
+        // Logout functionality
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            fetch('logout.php')
+                .then(() => {
+                    window.location.href = 'home.html'; // Redirect to home page after logout
+                })
+                .catch(error => console.error('Error logging out:', error));
+        });
+    </script>
+</body>
+</html>
